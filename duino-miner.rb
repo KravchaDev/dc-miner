@@ -1,21 +1,21 @@
 #!/usr/bin/env ruby
 # Minimal version of Duino-Coin PC Miner, useful for developing own apps
-# revox 2020-2021
+# revox 2020-2022
 require 'socket'
 require 'digest'
 require 'net/http'
-require 'json'
+require 'json' # Only default ruby libraries
 require 'time'
-require 'colorize'
+require 'colorize' # gem install colorize
 
-username = "enter" # Replace this with your username
-minerId = "enter" # Custom miner identifier
+username = "PUT USERNAME" # Replace this with your username
+minerId = "PUT mID" # Custom miner identifier
 
 # Disable debug output
 $VERBOSE = nil
 
 puts("\n ‖ Minimal DUCO-S1 Ruby Miner")
-puts(" ‖ Duino-Coin community 2020-2021")
+puts(" ‖ Duino-Coin community 2020-2022")
 puts(" ‖ https://github.com/revoxhere/duino-coin\n\n")
 
 # Server IP file url
@@ -32,13 +32,13 @@ sharecount = 0
 s = TCPSocket.open(serverip, serverport)
 # Read server version
 SERVER_VER = s.gets(3) 
-puts(' net '.colorize(:color => :white, :background => :blue) + ' Connected'.colorize(:color => :yellow)  + ' to the master Duino-Coin server ('+ SERVER_VER+ ')')
+puts(" net ".colorize(:color => :white, :background => :blue) + " Connected".colorize(:color => :yellow)  + " to the master Duino-Coin server ("+ SERVER_VER+ ")")
 
 # Mining loop
-puts(' cpu '.colorize(:color => :white, :background => :yellow) + ' Mining thread is starting'.colorize(:color => :yellow) + ' using DUCO-S1 algorithm')
+puts(" cpu ".colorize(:color => :white, :background => :yellow) + " Mining thread is starting".colorize(:color => :yellow) + " using DUCO-S1 algorithm")
 loop do 
     # Send job request
-    s.puts('JOB,'+String(username)+',MEDIUM,') 
+    s.puts("JOB,"+String(username)+",MEDIUM,") 
     # Read job
     job = s.read(87) 
     # Split into previous block hash, result hash and difficulty
@@ -46,7 +46,6 @@ loop do
     difficulty = job[2]
     # Measure starting time
     timeStart = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    
     for result in 0..100 * Integer(difficulty) + 1 do 
         # DUCO-S1 loop - find the numeric result
         # By checking if last block hash + n is result hash
@@ -73,8 +72,8 @@ loop do
             if SHAREFEED == "BAD"
                 puts(" cpu ".colorize(:color => :white, :background => :yellow) + " Rejected".colorize(:color => :red) + " share #" + String(sharecount) + ", speed: " + String(Integer(hashrate / 1000)) + "kH/s @ diff " + String(difficulty))
                 break
-               end
-             end
+                end
+            end
             end
         end
     end
